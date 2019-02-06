@@ -11,4 +11,4 @@ test:
 	go test -race -cover -v ./... -timeout 90
 
 agent:
-	go build -o build/agent github.com/nicktitle/redcanary/cmd
+	go build -o build/agent github.com/nicktitle/rc/cmd
