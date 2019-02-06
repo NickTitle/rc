@@ -1,9 +1,13 @@
 package main
 
 import (
-	"github.com/nicktitle/redcanary/pkg/agent"
+	"fmt"
+
+	"github.com/nicktitle/rc/pkg/agent"
+	"github.com/nicktitle/rc/pkg/fileformat"
 )
 
 func main() {
+	fmt.Println(fileformat.ExportExample())
 	agent.Start()
 }
