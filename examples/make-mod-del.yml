@@ -1,0 +1,8 @@
+name: make-mod-del
+steps:
+- kind: FileCreate
+  path: ./foo.txt
+- kind: FileModify
+  path: ./foo.txt
+- kind: FileDelete
+  path: ./foo.txt
