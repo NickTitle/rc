@@ -15,7 +15,8 @@ type Runbook struct {
 type Step struct {
 	Kind         StepKind
 	Path         string
-	ConnSettings *ConnectionSettings `yaml:"conn-settings,omitempty"`
+	Args         []string
+	ConnSettings *ConnectionSettings `yaml:"conn-settings"`
 }
 
 type ConnectionSettings struct {
@@ -37,35 +38,9 @@ const (
 	FileCreate   StepKind = "FileCreate"
 	FileDelete   StepKind = "FileDelete"
 	FileModify   StepKind = "FileModify"
-	SpawnProcess StepKind = "SpawnProcess"
-	ExfilData    StepKind = "ExfilData"
+	SendData     StepKind = "SendData"
+	StartProcess StepKind = "StartProcess"
 )
-
-func ExportExample() string {
-	rb := Runbook{
-		Name: "make-mod-del",
-		Steps: []Step{
-			Step{
-				Kind: FileCreate,
-				Path: "~/tmp/foo.txt",
-			},
-			Step{
-				Kind: FileModify,
-				Path: "~/tmp/foo.txt",
-			},
-			Step{
-				Kind: FileDelete,
-				Path: "~/tmp/foo.txt",
-			},
-		},
-	}
-
-	bytes, err := yaml.Marshal(rb)
-	if err != nil {
-		panic(err)
-	}
-	return string(bytes)
-}
 
 func Validate(path string) (Runbook, error) {
 	var rb Runbook
@@ -77,6 +52,15 @@ func Validate(path string) (Runbook, error) {
 
 	if err := yaml.Unmarshal(bytes, &rb); err != nil {
 		return rb, errors.New("unable to parse runbook from file")
+	}
+
+	for i, step := range rb.Steps {
+		switch step.Kind {
+		case SendData:
+			if step.ConnSettings == nil {
+				return rb, errors.Errorf("missing connection settings for step %v", i)
+			}
+		}
 	}
 
 	return rb, nil

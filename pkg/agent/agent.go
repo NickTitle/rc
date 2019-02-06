@@ -1,7 +1,60 @@
 package agent
 
-import "fmt"
+import (
+	"os"
+	"time"
 
-func Start() {
-	fmt.Println("HEY YA")
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
+	"github.com/nicktitle/rc/pkg/fileformat"
+)
+
+const modByteLen = 10
+
+type Agent struct {
+	logger  log.Logger
+	runbook fileformat.Runbook
+}
+
+type Event map[string]interface{}
+
+func NewAgent(logger log.Logger, runbook fileformat.Runbook) *Agent {
+	return &Agent{
+		logger:  logger,
+		runbook: runbook,
+	}
+}
+
+func (a *Agent) Run() {
+	for _, step := range a.runbook.Steps {
+		if err := a.runStep(step); err != nil {
+			level.Error(a.logger).Log("msg", "step failed", "err", err)
+			os.Exit(0)
+		}
+	}
+}
+
+func (a *Agent) runStep(step fileformat.Step) error {
+	var (
+		event Event
+		err   error
+	)
+	start := time.Now().Unix()
+	switch step.Kind {
+	case fileformat.FileCreate:
+		event, err = createFile(step.Path)
+	case fileformat.FileModify:
+		event, err = modifyFile(step.Path)
+	case fileformat.FileDelete:
+		event, err = deleteFile(step.Path)
+	case fileformat.StartProcess:
+		event, err = startProcess(step.Path, step.Args)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	a.decorateEventAndEmit(start, event)
+	return nil
 }

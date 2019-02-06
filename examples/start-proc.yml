@@ -1,0 +1,12 @@
+name: make-mod-del
+steps:
+- kind: StartProcess
+  path: touch
+  args:
+    - ./foo2.txt
+- kind: StartProcess
+  path: sleep
+  args:
+    - 2
+- kind: FileDelete
+  path: ./foo2.txt
