@@ -40,6 +40,7 @@ func (a *Agent) runStep(step fileformat.Step) error {
 		err   error
 	)
 	start := time.Now().Unix()
+
 	switch step.Kind {
 	case fileformat.FileCreate:
 		event, err = createFile(step.Path)
@@ -49,6 +50,8 @@ func (a *Agent) runStep(step fileformat.Step) error {
 		event, err = deleteFile(step.Path)
 	case fileformat.StartProcess:
 		event, err = startProcess(step.Path, step.Args)
+	case fileformat.SendData:
+		event, err = sendData(*step.ConnSettings)
 	}
 
 	if err != nil {

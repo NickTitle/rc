@@ -20,11 +20,10 @@ type Step struct {
 }
 
 type ConnectionSettings struct {
-	Destination ConnectionAddress
 	Source      ConnectionAddress
-
-	PayloadSize int
-	Insecure    bool
+	Destination ConnectionAddress
+	PayloadSize int `yaml:"payload-size"`
+	Scheme      string
 }
 
 type ConnectionAddress struct {
