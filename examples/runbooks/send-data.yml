@@ -1,0 +1,12 @@
+name: send-data
+steps:
+- kind: SendData
+  conn-settings:
+    scheme: http
+    source:
+      host: 127.0.0.1
+      port: 6102
+    destination:
+      host: localhost
+      port: 3000
+    payload-size: 200
