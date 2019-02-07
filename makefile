@@ -2,7 +2,7 @@ deps:
 	@if [ -z `which dep` ]; then \
     go get -u github.com/golang/dep/cmd/dep; \
 	fi; \
-	dep ensure -vendor-only
+	dep ensure
 
 lint:
 	go vet ./...
