@@ -43,15 +43,15 @@ func (a *Agent) runStep(step fileformat.Step) error {
 
 	switch step.Kind {
 	case fileformat.FileCreate:
-		event, err = createFile(step.Path)
+		event, err = createFile(*step.FSettings)
 	case fileformat.FileModify:
-		event, err = modifyFile(step.Path)
+		event, err = modifyFile(*step.FSettings)
 	case fileformat.FileDelete:
-		event, err = deleteFile(step.Path)
+		event, err = deleteFile(*step.FSettings)
 	case fileformat.StartProcess:
-		event, err = startProcess(step.Path, step.Args)
+		event, err = startProcess(*step.PSettings)
 	case fileformat.SendData:
-		event, err = sendData(*step.ConnSettings)
+		event, err = sendData(*step.CSettings)
 	}
 
 	if err != nil {

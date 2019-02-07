@@ -1,0 +1,3 @@
+name: bad-runbook-missing-info
+steps:
+- kind: SendData

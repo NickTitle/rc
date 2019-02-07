@@ -13,10 +13,20 @@ type Runbook struct {
 }
 
 type Step struct {
-	Kind         StepKind
-	Path         string
-	Args         []string
-	ConnSettings *ConnectionSettings `yaml:"conn-settings"`
+	Kind      StepKind
+	FSettings *FileSettings       `yaml:"file-settings"`
+	PSettings *ProcessSettings    `yaml:"proc-settings"`
+	CSettings *ConnectionSettings `yaml:"conn-settings"`
+}
+
+type ProcessSettings struct {
+	Name string
+	Args []string
+	Wait bool
+}
+
+type FileSettings struct {
+	Path string
 }
 
 type ConnectionSettings struct {
@@ -55,8 +65,16 @@ func Validate(path string) (Runbook, error) {
 
 	for i, step := range rb.Steps {
 		switch step.Kind {
+		case FileCreate, FileModify, FileDelete:
+			if step.FSettings == nil {
+				return rb, errors.Errorf("missing file settings for step %v", i)
+			}
+		case StartProcess:
+			if step.PSettings == nil {
+				return rb, errors.Errorf("missing process settings for step %v", i)
+			}
 		case SendData:
-			if step.ConnSettings == nil {
+			if step.CSettings == nil {
 				return rb, errors.Errorf("missing connection settings for step %v", i)
 			}
 		}
