@@ -1,7 +1,6 @@
 package agent
 
 import (
-	"fmt"
 	"os"
 	"os/user"
 	"strconv"
@@ -10,6 +9,9 @@ import (
 	"github.com/go-kit/kit/log/level"
 )
 
+// decorateEventAndEmit takes a unix timestamp and an Event from a fileformat.Step execution,
+// and adds the common fields that should be output by all types of activity
+//
 func (a *Agent) decorateEventAndEmit(unixtime int64, event Event) {
 	// by translating to a slice here, we guarantee key alignment in the logs
 	// since indexing is reliably ordered, and maps offer no such guarantee
@@ -30,12 +32,8 @@ func (a *Agent) decorateEventAndEmit(unixtime int64, event Event) {
 	}
 
 	for k, v := range event {
-		eventPairs = append(eventPairs, logPair(k, v)...)
+		eventPairs = append(eventPairs, k, v)
 	}
 
 	level.Info(a.logger).Log(eventPairs...)
-}
-
-func logPair(k string, v interface{}) []interface{} {
-	return []interface{}{k, fmt.Sprintf("%v", v)}
 }

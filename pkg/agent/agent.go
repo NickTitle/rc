@@ -11,13 +11,19 @@ import (
 
 const modByteLen = 10
 
+// Agent is the abstract type that runs runbooks and outputs logs about the steps inside
+//
 type Agent struct {
 	logger  log.Logger
 	runbook fileformat.Runbook
 }
 
+// Event is used to collect attributes about different steps, for eventual passing to an agent's logger
+//
 type Event map[string]interface{}
 
+// NewAgent returns an Agent with a logger and runbook ready to go
+//
 func NewAgent(logger log.Logger, runbook fileformat.Runbook) *Agent {
 	return &Agent{
 		logger:  logger,
@@ -25,6 +31,9 @@ func NewAgent(logger log.Logger, runbook fileformat.Runbook) *Agent {
 	}
 }
 
+// Run will attempt to run the runbook for an instance of Agent, exiting
+// gracefully if something goes wrong, and logging the exception
+//
 func (a *Agent) Run() {
 	for _, step := range a.runbook.Steps {
 		if err := a.runStep(step); err != nil {
