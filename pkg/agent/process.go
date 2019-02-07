@@ -13,6 +13,7 @@ func startProcess(settings fileformat.ProcessSettings) (Event, error) {
 	if err := cmd.Start(); err != nil {
 		return Event{}, errors.Wrapf(err, "failed to start process: %s", settings.Name)
 	}
+
 	if settings.Wait {
 		if err := cmd.Wait(); err != nil {
 			return Event{}, errors.Wrapf(err, "failure waiting for process to complete, %s", settings.Name)

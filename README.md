@@ -23,7 +23,7 @@ Interacting with the repo is done via makefile, supporting the following command
 The spec for runbooks is fully documented in [runbook.go](pkg/fileformat/runbook.go)
 
 ### extra
-For testing the [send data runbook](examples/runbooks/send-data.yml), a blackhole server stub is provided, to drain activity to if you don't have an endpoint configured already
+For testing the [send data runbook](examples/runbooks/send-data.yml), a [blackhole server](examples/blackhole.go) is provided, to drain activity to if you don't have an endpoint configured already. The server accepts a port argument if you wish to modify the runbook and set the server up to listen somewhere else
 
 ### ideas for more work
 - the step executor things could be easily abstracted behind a `Stepper` interface, which would implement the `Step` function, that accepts a `fileformat.Step`, and returns an `Event, error` pair just like now. this would be cool, because then we could mock each of the step implementations to test the agent (even though it's just a dumb pipe to those functions now)
